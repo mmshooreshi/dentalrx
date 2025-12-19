@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Rx Master Dashboard V3.0</title>
+    
+    <!-- Icons & Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f1f5f9;
+            --surface: #ffffff;
+            --primary: #2563eb;       
+            --primary-dark: #1e3a8a;
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --border: #e2e8f0;
+            
+            /* Text Colors */
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --text-mono: #be185d;     
+
+            /* Radius & Shadow */
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 13px;
+            line-height: 1.5;
+            padding-bottom: 60px;
+        }
+
+        /* --- Language & Direction Logic --- */
+        body.lang-en { font-family: 'Inter', sans-serif; direction: ltr; }
+        body.lang-fa { font-family: 'Vazirmatn', sans-serif; direction: rtl; }
+
+        .en-only { display: inline-block; }
+        .fa-only { display: none; }
+        body.lang-fa .en-only { display: none; }
+        body.lang-fa .fa-only { display: inline-block; }
+        
+        /* Force LTR for Medical Terms/Math even in Persian */
+        .force-ltr { direction: ltr; unicode-bidi: embed; text-align: left; font-family: 'Inter', sans-serif; }
+        body.lang-fa .force-ltr { text-align: left; }
+
+        /* --- Sticky Navigation --- */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-links { display: flex; gap: 5px; overflow-x: auto; height: 100%; align-items: center; }
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
+        
+        .toggle-wrapper { display: flex; align-items: center; margin-inline-start: 15px; }
+        .lang-btn {
+            background: #0f172a; color: white; border: none; padding: 6px 12px; border-radius: 6px;
+            cursor: pointer; font-weight: 700; font-size: 0.75rem; display: flex; gap: 6px; align-items: center;
+        }
+
+        /* --- Main Layout --- */
+        .container { max-width: 1600px; margin: 20px auto; padding: 0 15px; }
+        
+        .section-title {
+            font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin: 30px 0 15px 0;
+            display: flex; align-items: center; gap: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--border);
+            scroll-margin-top: 70px;
+        }
+        .section-title i { color: var(--primary); }
+
+        .grid-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- Card Styles --- */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        .card-header {
+            padding: 12px 16px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase;
+            border-bottom: 1px solid var(--border); background: #f8fafc; color: var(--text-muted);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-body { padding: 8px; flex-grow: 1; }
+        .card-body2 { padding: 0px; flex-grow: 1; }
+
+        /* --- Visual Elements --- */
+        .drug { font-weight: 700; color: var(--primary); direction: ltr; display: inline-block; }
+        .dose { 
+            font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--text-mono); 
+            background: rgba(190, 24, 93, 0.08); padding: 1px 5px; border-radius: 4px; direction: ltr; display: inline-block;
+        }
+        .rx-box {
+            background: #f1f5f9; border-left: 3px solid #94a3b8; padding: 6px 10px; margin-top: 5px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #475569;
+            direction: ltr; text-align: left; display: block; width: 100%;
+        }
+        body.lang-fa .rx-box { border-left: none; border-right: 3px solid #94a3b8; }
+
+        /* --- Tables (Bilingual Fix) --- */
+        .table-container { overflow-x: auto; max-height: 450px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th { 
+            text-align: inherit; background: #e2e8f0; color: var(--text-main); padding: 10px;
+            font-weight: 700; position: sticky; top: 0; z-index: 10;
+        }
+        td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:hover td { background: #f8fafc; }
+        
+        /* Specific Column Widths */
+        .c-abbr { width: 10%; font-weight: 700; color: var(--primary); font-family: 'JetBrains Mono'; direction: ltr; }
+        
+        /* --- Safety Matrix Cards --- */
+        .safety-item {
+            border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 10px;
+            border-left: 4px solid #ccc;
+        }
+        body.lang-fa .safety-item { border-left: 1px solid var(--border); border-right: 4px solid #ccc; }
+        
+        .s-warn { border-color: #f59e0b; border-left-color: #f59e0b !important; body.lang-fa & { border-right-color: #f59e0b !important; } }
+        .s-danger { border-color: #ef4444; border-left-color: #ef4444 !important; body.lang-fa & { border-right-color: #ef4444 !important; } }
+        .s-safe { border-color: #10b981; border-left-color: #10b981 !important; body.lang-fa & { border-right-color: #10b981 !important; } }
+
+    </style>
+</head>
+<body class="lang-en" id="home">
+
+<!-- 1. STICKY NAVIGATION -->
+<nav class="sticky-nav">
+    <div style="font-weight:800; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-tooth" style="color:var(--primary);"></i>
+        <span class="en-only"></span><span class="fa-only">نسخه‌نویسی</span>
+    </div>
+
+    <div class="nav-links">
+        <a href="#section-essentials" class="nav-item">
+            <span class="en-only">Essentials</span><span class="fa-only">اصول پایه</span>
+        </a>
+        <a href="#section-reference" class="nav-item">
+            <span class="en-only">Reference</span><span class="fa-only">جداول مرجع</span>
+        </a>
+        <a href="#section-protocols" class="nav-item">
+            <span class="en-only">Protocols</span><span class="fa-only">پروتکل‌ها</span>
+        </a>
+        <a href="#section-safety" class="nav-item">
+            <span class="en-only">Safety</span><span class="fa-only">ایمنی</span>
+        </a>
+    </div>
+
+    <div class="toggle-wrapper">
+        <button class="lang-btn" onclick="toggleLanguage()">
+            <i class="fa-solid fa-globe"></i> <span class="en-only">FA</span><span class="fa-only">EN</span>
+        </button>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- ========================================= -->
+    <!-- SECTION 1: ESSENTIALS (Anatomy, Law, Do's) -->
+    <!-- ========================================= -->
+    <div id="section-essentials" class="section-title">
+        <i class="fa-solid fa-gavel"></i>
+        <span class="en-only">Prescription Anatomy & Law</span>
+        <span class="fa-only">آناتومی نسخه و قوانین</span>
+    </div>
+
+    <div class="grid-area">
+        <!-- RX PAPER VISUAL -->
+        <div class="card" style="grid-row: span 2;">
+            <div class="card-header">
+                <span class="en-only">Visual Prescription Guide</span>
+                <span class="fa-only">راهنمای تصویری نسخه</span>
+            </div>
+            <div class="card-body">
+                <div style="background:#fff; border:1px solid #ccc; padding:15px; font-family:'JetBrains Mono'; box-shadow:2px 2px 8px rgba(0,0,0,0.05); direction:ltr; text-align:left;">
+                    <div style="border-bottom:1px dashed #999; padding-bottom:5px; margin-bottom:10px;">
+                        <strong>Pt:</strong> John Doe (Age: 32) <br>
+                        <strong style="color:#ef4444;">Dx:</strong> Irreversible Pulpitis #30 (Required)
+                    </div>
+                    <div style="font-size:2rem; font-weight:bold; color:var(--primary);">℞</div>
+                    
+                    <div style="padding-left:15px; border-left:3px solid var(--primary); margin-bottom:10px;">
+                        <div>1. <strong style="color:#0f172a">Amoxicillin</strong> (Drug Name)</div>
+                        <div>2. <strong>Capsule</strong> (Dosage Form)</div>
+                        <div>3. <strong>500 mg</strong> (Strength)</div>
+                        <div>4. Disp: <strong>#21 (Twenty-one)</strong> (Quantity)</div>
+                        <div>5. Sig: <strong>Take 1 cap PO</strong> (Route)</div>
+                        <div>6. <strong>q8h until finished</strong> (Frequency)</div>
+                    </div>
+                    
+                    <div style="margin-top:20px; font-size:0.8em; color:#666;">
+                        Dr. Smith, DDS | Lic: #987654 | 555-0199
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEGAL REQUIREMENTS -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Legal Requirements</span>
+                <span class="fa-only">الزامات قانونی</span>
+            </div>
+            <div class="card-body">
+                <ul style="list-style:none; padding:0;">
+                    <li style="margin-bottom:8px; display:flex; gap:8px;">
+                        <i class="fa-solid fa-check" style="color:green;"></i>
+                        <span class="en-only"><strong>Patient ID:</strong> Full Name, Age (Critical for Peds), Address.</span>
+                        <span class="fa-only"><strong>مشخصات بیمار:</strong> نام کامل، سن (حیاتی برای اطفال)، آدرس.</span>
+                    </li>
+                    <li style="margin-bottom:8px; display:flex; gap:8px;">
+                        <i class="fa-solid fa-check" style="color:green;"></i>
+                        <span class="en-only"><strong>Prescriber ID:</strong> Name, Stamp, Signature, Medical Council Number.</span>
+                        <span class="fa-only"><strong>مشخصات پزشک:</strong> نام، مهر، امضا، شماره نظام پزشکی.</span>
+                    </li>
+                    <li style="margin-bottom:8px; display:flex; gap:8px;">
+                        <i class="fa-solid fa-triangle-exclamation" style="color:orange;"></i>
+                        <span class="en-only"><strong>Opioids:</strong> Qty in numbers AND letters. No pre-dating.</span>
+                        <span class="fa-only"><strong>مخدرها:</strong> تعداد به عدد و حروف. بدون تاریخ گذشته/آینده.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- DOs and DON'Ts -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Common Errors</span>
+                <span class="fa-only">خطاهای رایج</span>
+            </div>
+            <div class="card-body">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <strong style="color:#ef4444; display:block; margin-bottom:5px;">DON'T <i class="fa-solid fa-xmark"></i></strong>
+                        <ul style="font-size:0.8rem; padding-inline-start:15px;">
+                            <li><span class="en-only">Vague "Use as directed"</span><span class="fa-only">دستور مبهم "طبق دستور"</span></li>
+                            <li><span class="en-only">Look-alike name confusion</span><span class="fa-only">اشتباه اسامی مشابه</span></li>
+                            <li><span class="en-only">IV forms for home use</span><span class="fa-only">نوشتن فرم IV برای خانه</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong style="color:#10b981; display:block; margin-bottom:5px;">DO <i class="fa-solid fa-check"></i></strong>
+                        <ul style="font-size:0.8rem; padding-inline-start:15px;">
+                            <li><span class="en-only">Write Diagnosis</span><span class="fa-only">نوشتن تشخیص</span></li>
+                            <li><span class="en-only">Check Allergies</span><span class="fa-only">چک کردن حساسیت‌ها</span></li>
+                            <li><span class="en-only">Tall-man (predniSONE)</span><span class="fa-only">خوانا نوشتن دوزها</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- SECTION 2: REFERENCE TABLES -->
+    <!-- ========================================= -->
+    <div id="section-reference" class="section-title">
+        <i class="fa-solid fa-table-list"></i>
+        <span class="en-only">Abbreviations & Dosage Forms</span>
+        <span class="fa-only">اختصارات و اشکال دارویی</span>
+    </div>
+
+    <div class="grid-area">
+        <!-- ABBREVIATIONS TABLE -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Frequency & Route (15 Items)</span>
+                <span class="fa-only">تواتر و راه مصرف (۱۵ مورد)</span>
+            </div>
+            <div class="card-body2 table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="c-abbr">Abbr</th>
+                            <th><span class="en-only">Meaning</span><span class="fa-only">معنی</span></th>
+                            <th><span class="en-only">Use</span><span class="fa-only">کاربرد</span></th>
+                            <th><span class="en-only">Example Rx</span><span class="fa-only">مثال نسخه</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="c-abbr">Daily</td><td><span class="en-only">Once daily</span><span class="fa-only">روزی ۱ بار</span></td><td>MW</td><td><span class="rx-box">Chlorhexidine MW Daily</span></td></tr>
+                        <tr><td class="c-abbr">BID</td><td><span class="en-only">Twice daily</span><span class="fa-only">روزی ۲ بار</span></td><td>Abx</td><td><span class="rx-box">Amox 500mg BID</span></td></tr>
+                        <tr><td class="c-abbr">TID</td><td><span class="en-only">3x daily</span><span class="fa-only">روزی ۳ بار</span></td><td>Pain</td><td><span class="rx-box">Ibuprofen 400mg TID</span></td></tr>
+                        <tr><td class="c-abbr">QID</td><td><span class="en-only">4x daily</span><span class="fa-only">روزی ۴ بار</span></td><td>Inf</td><td><span class="rx-box">Metro 250mg QID</span></td></tr>
+                        <tr><td class="c-abbr">a.c.</td><td><span class="en-only">Before meal</span><span class="fa-only">قبل غذا</span></td><td>GI</td><td><span class="rx-box">Omeprazole 20mg a.c.</span></td></tr>
+                        <tr><td class="c-abbr">p.c.</td><td><span class="en-only">After meal</span><span class="fa-only">بعد غذا</span></td><td>NSAID</td><td><span class="rx-box">Ibuprofen 400mg p.c.</span></td></tr>
+                        <tr><td class="c-abbr">PO</td><td><span class="en-only">Oral</span><span class="fa-only">خوراکی</span></td><td>Gen</td><td><span class="rx-box">APAP 500mg PO</span></td></tr>
+                        <tr><td class="c-abbr">IM</td><td><span class="en-only">Intramuscular</span><span class="fa-only">عضلانی</span></td><td>Inj</td><td><span class="rx-box">Dexamethasone IM</span></td></tr>
+                        <tr><td class="c-abbr">IV</td><td><span class="en-only">Intravenous</span><span class="fa-only">وریدی</span></td><td>Sed</td><td><span class="rx-box">Midazolam IV</span></td></tr>
+                        <tr><td class="c-abbr">IV Inf</td><td><span class="en-only">Infusion</span><span class="fa-only">انفیوژن</span></td><td>Fluid</td><td><span class="rx-box">NS 500mL IV Inf</span></td></tr>
+                        <tr><td class="c-abbr">q4h</td><td><span class="en-only">Every 4h</span><span class="fa-only">هر ۴ ساعت</span></td><td>Pain</td><td><span class="rx-box">APAP 325mg q4h</span></td></tr>
+                        <tr><td class="c-abbr">q6h</td><td><span class="en-only">Every 6h</span><span class="fa-only">هر ۶ ساعت</span></td><td>Inf</td><td><span class="rx-box">Ibuprofen 400mg q6h</span></td></tr>
+                        <tr><td class="c-abbr">q8h</td><td><span class="en-only">Every 8h</span><span class="fa-only">هر ۸ ساعت</span></td><td>Abx</td><td><span class="rx-box">Amox 500mg q8h</span></td></tr>
+                        <tr><td class="c-abbr">PRN</td><td><span class="en-only">As Needed</span><span class="fa-only">هنگام نیاز</span></td><td>Pain</td><td><span class="rx-box">Ibuprofen PRN Pain</span></td></tr>
+                        <tr><td class="c-abbr">Stat</td><td><span class="en-only">Immediately</span><span class="fa-only">فوری</span></td><td>Emerg</td><td><span class="rx-box">Epi 0.3mg Stat</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FORMS TABLE -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Dosage Forms (19 Items)</span>
+                <span class="fa-only">اشکال دارویی (۱۹ مورد)</span>
+            </div>
+            <div class="card-body2  table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="c-abbr">Abbr</th>
+                            <th><span class="en-only">Meaning</span><span class="fa-only">معنی</span></th>
+                            <th><span class="en-only">Use</span><span class="fa-only">کاربرد</span></th>
+                            <th><span class="en-only">Example Rx</span><span class="fa-only">مثال نسخه</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="c-abbr">Cap</td><td><span class="en-only">Capsule</span><span class="fa-only">کپسول</span></td><td>Abx</td><td><span class="rx-box">Amox 500mg Cap</span></td></tr>
+                        <tr><td class="c-abbr">Tab</td><td><span class="en-only">Tablet</span><span class="fa-only">قرص</span></td><td>Pain</td><td><span class="rx-box">Ibuprofen 400mg Tab</span></td></tr>
+                        <tr><td class="c-abbr">Caplet</td><td><span class="en-only">Cap-Tab</span><span class="fa-only">قرص کپسولی</span></td><td>Pain</td><td><span class="rx-box">APAP 500mg Caplet</span></td></tr>
+                        <tr><td class="c-abbr">Syr</td><td><span class="en-only">Syrup</span><span class="fa-only">شربت</span></td><td>Peds</td><td><span class="rx-box">Amox Syr 250mg/5ml</span></td></tr>
+                        <tr><td class="c-abbr">Drop</td><td><span class="en-only">Drops</span><span class="fa-only">قطره</span></td><td>Fl</td><td><span class="rx-box">Fluoride Drop</span></td></tr>
+                        <tr><td class="c-abbr">Supp</td><td><span class="en-only">Suppository</span><span class="fa-only">شیاف</span></td><td>Alt</td><td><span class="rx-box">APAP Supp PRN</span></td></tr>
+                        <tr><td class="c-abbr">Cr</td><td><span class="en-only">Cream</span><span class="fa-only">کرم</span></td><td>Lip</td><td><span class="rx-box">Nystatin Cream</span></td></tr>
+                        <tr><td class="c-abbr">Oint</td><td><span class="en-only">Ointment</span><span class="fa-only">پماد</span></td><td>Topical</td><td><span class="rx-box">Lidocaine Oint</span></td></tr>
+                        <tr><td class="c-abbr">Gel</td><td><span class="en-only">Gel</span><span class="fa-only">ژل</span></td><td>LA</td><td><span class="rx-box">Lidocaine Gel</span></td></tr>
+                        <tr><td class="c-abbr">Spray</td><td><span class="en-only">Spray</span><span class="fa-only">اسپری</span></td><td>Gag</td><td><span class="rx-box">Lido Spray PRN</span></td></tr>
+                        <tr><td class="c-abbr">MW</td><td><span class="en-only">Mouthwash</span><span class="fa-only">دهان‌شویه</span></td><td>Gum</td><td><span class="rx-box">CHX MW BID</span></td></tr>
+                        <tr><td class="c-abbr">Susp</td><td><span class="en-only">Suspension</span><span class="fa-only">سوسپانسیون</span></td><td>Peds</td><td><span class="rx-box">Amox Susp q8h</span></td></tr>
+                        <tr><td class="c-abbr">Sol</td><td><span class="en-only">Solution</span><span class="fa-only">محلول</span></td><td>Irrig</td><td><span class="rx-box">Saline Sol</span></td></tr>
+                        <tr><td class="c-abbr">Elix</td><td><span class="en-only">Elixir</span><span class="fa-only">اکسیر</span></td><td>Hist</td><td><span class="rx-box">Diphenhydramine Elix</span></td></tr>
+                        <tr><td class="c-abbr">Eff</td><td><span class="en-only">Effervescent</span><span class="fa-only">جوشان</span></td><td>Pain</td><td><span class="rx-box">APAP Eff Tab</span></td></tr>
+                        <tr><td class="c-abbr">Amp</td><td><span class="en-only">Ampoule</span><span class="fa-only">آمپول</span></td><td>Inj</td><td><span class="rx-box">Lido 2% Amp</span></td></tr>
+                        <tr><td class="c-abbr">Vial</td><td><span class="en-only">Vial</span><span class="fa-only">ویال</span></td><td>Sed</td><td><span class="rx-box">Midazolam Vial</span></td></tr>
+                        <tr><td class="c-abbr">Fluid</td><td><span class="en-only">IV Fluid</span><span class="fa-only">مایع وریدی</span></td><td>Surg</td><td><span class="rx-box">NS 500mL Inf</span></td></tr>
+                        <tr><td class="c-abbr">Paste</td><td><span class="en-only">Paste</span><span class="fa-only">خمیر</span></td><td>Ulcer</td><td><span class="rx-box">Triamcinolone Paste</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- SECTION 3: CLINICAL PROTOCOLS -->
+    <!-- ========================================= -->
+    <div id="section-protocols" class="section-title">
+        <i class="fa-solid fa-user-doctor"></i>
+        <span class="en-only">Clinical Protocols (Pain & Infection)</span>
+        <span class="fa-only">پروتکل‌های بالینی (درد و عفونت)</span>
+    </div>
+
+    <div class="grid-area">
+        <!-- PAIN CARD -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Pain Management</span>
+                <span class="fa-only">مدیریت درد</span>
+            </div>
+            <div class="card-body">
+                <!-- Mild -->
+                <div style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
+                    <div style="background:#dcfce7; color:#166534; font-weight:800; display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.75rem;">
+                        <span class="en-only">MILD</span><span class="fa-only">خفیف</span>
+                    </div>
+                    <div style="margin-top:5px;">
+                        <span class="drug">Ibuprofen</span> <span class="dose">400-600mg</span> <span class="force-ltr">q6h</span>
+                        <div class="rx-box">Max: 3200mg/day (Ceiling at 400mg)</div>
+                    </div>
+                </div>
+                <!-- Moderate -->
+                <div style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
+                    <div style="background:#fef3c7; color:#b45309; font-weight:800; display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.75rem;">
+                        <span class="en-only">MODERATE</span><span class="fa-only">متوسط</span>
+                    </div>
+                    <div style="margin-top:5px;">
+                        <span class="drug">Ibuprofen</span> <span class="dose">600mg</span> + <span class="drug">APAP</span> <span class="dose">500mg</span>
+                        <div class="rx-box"><span class="en-only">Take together or alternate q3h</span><span class="fa-only">همزمان یا متناوب هر ۳ ساعت</span></div>
+                    </div>
+                </div>
+                <!-- Severe -->
+                <div>
+                    <div style="background:#fee2e2; color:#991b1b; font-weight:800; display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.75rem;">
+                        <span class="en-only">SEVERE</span><span class="fa-only">شدید</span>
+                    </div>
+                    <div style="margin-top:5px;">
+                        <span class="drug">Hydrocodone/APAP</span> <span class="dose">5/325mg</span>
+                        <div class="rx-box">1-2 tabs q4-6h (Max 3 days)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFECTION CARD -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Odontogenic Infections</span>
+                <span class="fa-only">عفونت‌های دندانی</span>
+            </div>
+            <div class="card-body">
+                <!-- Localized -->
+                <div style="margin-bottom:15px;">
+                    <strong style="color:var(--primary-dark);"><i class="fa-solid fa-circle-dot"></i> <span class="en-only">Localized</span><span class="fa-only">موضعی</span></strong>
+                    <div style="margin-top:4px;">
+                        <span class="drug">Amoxicillin</span> <span class="dose">500mg</span> <span class="force-ltr">q8h (5-7 days)</span>
+                        <div class="en-only" style="font-size:0.8rem; color:#ef4444;">Failure? Add Metronidazole 500mg</div>
+                        <div class="fa-only" style="font-size:0.8rem; color:#ef4444;">شکست درمان؟ مترونیدازول اضافه شود</div>
+                    </div>
+                </div>
+                <!-- Spreading -->
+                <div style="margin-bottom:15px;">
+                    <strong style="color:#ef4444;"><i class="fa-solid fa-arrows-up-down-left-right"></i> <span class="en-only">Spreading</span><span class="fa-only">گسترده</span></strong>
+                    <div style="margin-top:4px;">
+                        <span class="drug">Amox/Clav</span> <span class="dose">875/125mg</span> <span class="force-ltr">q12h</span>
+                    </div>
+                </div>
+                <!-- Allergy -->
+                <div style="background:#fff7ed; border:1px solid #ffedd5; padding:8px; border-radius:6px;">
+                    <strong style="color:#c2410c; font-size:0.8rem;">
+                        <span class="en-only">PCN ALLERGY</span><span class="fa-only">حساسیت پنی‌سیلین</span>
+                    </strong>
+                    <ul style="font-size:0.8rem; padding-inline-start:15px; margin-top:5px;">
+                        <li><span class="en-only">Mild: </span><span class="fa-only">خفیف: </span> <span class="drug">Cephalexin</span> 500mg q6h</li>
+                        <li><span class="en-only">Severe: </span><span class="fa-only">شدید: </span> <span class="drug">Azithromycin</span> <span class="dose">Z-Pak</span></li>
+                        <li><span class="en-only">Alt: </span><span class="fa-only">جایگزین: </span> <span class="drug">Clindamycin</span> 300mg (C.Diff risk!)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOFT TISSUE CARD -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Mucosal & Soft Tissue</span>
+                <span class="fa-only">بافت نرم و مخاط</span>
+            </div>
+            <div class="card-body">
+                <div style="margin-bottom:10px;">
+                    <div class="drug">Candidiasis</div>
+                    <div class="rx-box">Nystatin Susp 100,000 U/mL (Swish/Spit QID)</div>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <div class="drug">Herpes Labialis</div>
+                    <div class="rx-box">Valacyclovir 2g BID (1 Day) - Prodrome</div>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <div class="drug">Aphthous Ulcer</div>
+                    <div class="rx-box">Triamcinolone Paste 0.1% (Apply BID)</div>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <div class="drug">Stomatitis (Magic MW)</div>
+                    <div class="rx-box">Diphenhydramine + Maalox + Lidocaine</div>
+                </div>
+                <div>
+                    <div class="drug">Dry Socket</div>
+                    <div class="rx-box">Alvogyl Paste (No Abx needed)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- SECTION 4: SAFETY & SPECIAL CARE -->
+    <!-- ========================================= -->
+    <div id="section-safety" class="section-title">
+        <i class="fa-solid fa-shield-heart"></i>
+        <span class="en-only">Pediatrics, Sedation & Safety</span>
+        <span class="fa-only">اطفال، آرام‌بخشی و ایمنی</span>
+    </div>
+
+    <div class="grid-area">
+        <!-- PEDIATRIC MATH -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Pediatric Dosing (By Weight kg)</span>
+                <span class="fa-only">دوز اطفال (وزن kg)</span>
+            </div>
+            <div class="card-body">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:5px;">
+                    <span class="drug">Amoxicillin</span>
+                    <span class="dose">20-40 mg/kg/day</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:5px;">
+                    <span class="drug">Acetaminophen</span>
+                    <span class="dose">10-15 mg/kg/dose</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:5px;">
+                    <span class="drug">Ibuprofen</span>
+                    <span class="dose">4-10 mg/kg/dose</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span class="drug">Azithromycin</span>
+                    <span class="dose">10 mg/kg (Day 1)</span>
+                </div>
+                <div style="margin-top:10px; font-size:0.75rem; color:#ef4444; font-weight:bold;">
+                    <span class="en-only">NEVER EXCEED ADULT MAX DOSE!</span>
+                    <span class="fa-only">هرگز از دوز بزرگسال بیشتر نشود!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEDATION -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Anxiety (Adult Single Dose)</span>
+                <span class="fa-only">ضداضطراب (تک دوز بزرگسال)</span>
+            </div>
+            <div class="card-body">
+                <div style="margin-bottom:8px;">
+                    <span class="drug">Diazepam</span> <span class="dose">5-10 mg</span>
+                    <div style="font-size:0.75rem;">1 hr before appt.</div>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <span class="drug">Triazolam</span> <span class="dose">0.125-0.25 mg</span>
+                    <div style="font-size:0.75rem;">Rapid onset.</div>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <span class="drug">Hydroxyzine</span> <span class="dose">25-50 mg</span>
+                    <div style="font-size:0.75rem;">Mild / Antihistamine effect.</div>
+                </div>
+                <div class="rx-box" style="color:#b91c1c; border-color:#b91c1c;">
+                    <span class="en-only">Escort Mandatory. No Driving 24h.</span>
+                    <span class="fa-only">همراه الزامی. رانندگی ممنوع.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAFETY MATRIX -->
+        <div class="card">
+            <div class="card-header">
+                <span class="en-only">Contraindications & Warnings</span>
+                <span class="fa-only">منع مصرف و هشدارها</span>
+            </div>
+            <div class="card-body">
+                <div class="safety-item s-danger">
+                    <strong class="drug">NSAIDs</strong>
+                    <div><span class="en-only">Avoid in 3rd Trimester (Teratogen). Avoid in Renal Failure. Warfarin Interaction.</span><span class="fa-only">ممنوع در سه ماهه سوم بارداری. ممنوع در نارسایی کلیه. تداخل با وارفارین.</span></div>
+                </div>
+                <div class="safety-item s-warn">
+                    <strong class="drug">Acetaminophen</strong>
+                    <div><span class="en-only">Liver Toxicity with Alcohol. Safe in Pregnancy.</span><span class="fa-only">سمیت کبد با الکل. در بارداری ایمن است.</span></div>
+                </div>
+                <div class="safety-item s-danger">
+                    <strong class="drug">Metronidazole</strong>
+                    <div><span class="en-only">NO ALCOHOL (Disulfiram Reaction). Severe Vomiting.</span><span class="fa-only">الکل ممنوع (واکنش دی‌سولفیرام). استفراغ شدید.</span></div>
+                </div>
+                <div class="safety-item s-danger">
+                    <strong class="drug">Tetracyclines</strong>
+                    <div><span class="en-only">Avoid in Pregnancy & Kids < 8yo (Teeth Staining).</span><span class="fa-only">ممنوع در بارداری و کودکان زیر ۸ سال (تغییر رنگ دندان).</span></div>
+                </div>
+                <div class="safety-item s-warn">
+                    <strong class="drug">Bisphosphonates</strong>
+                    <div><span class="en-only">MRONJ Risk. Avoid invasive surgery.</span><span class="fa-only">خطر نکروز فک (MRONJ). اجتناب از جراحی تهاجمی.</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LOCAL ANESTHESIA MAX -->
+        <div class="card">
+             <div class="card-header">
+                <span class="en-only">LA Max Doses (70kg Adult)</span>
+                <span class="fa-only">حداکثر دوز بی‌حسی (۷۰ کیلو)</span>
+            </div>
+            <div class="card-body table-container">
+                <table>
+                     <thead>
+                        <tr>
+                            <th>Drug</th>
+                            <th>mg/kg</th>
+                            <th>Abs Max</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="drug">Lidocaine 2%</td><td class="dose">4.4</td><td>300mg</td></tr>
+                        <tr><td class="drug">Articaine 4%</td><td class="dose">7.0</td><td>500mg</td></tr>
+                        <tr><td class="drug">Mepivacaine 3%</td><td class="dose">4.4</td><td>300mg</td></tr>
+                        <tr><td class="drug">Bupivacaine</td><td class="dose">2.0</td><td>90mg</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Language Toggle
+    function toggleLanguage() {
+        const body = document.body;
+        if (body.classList.contains('lang-en')) {
+            body.classList.remove('lang-en');
+            body.classList.add('lang-fa');
+        } else {
+            body.classList.remove('lang-fa');
+            body.classList.add('lang-en');
+        }
+    }
+
+    // Active Link Highlighter
+    const sections = document.querySelectorAll('.section-title');
+    const navLi = document.querySelectorAll('.nav-item');
+
+    window.onscroll = () => {
+        var current = "";
+        sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 100) {
+                current = section.getAttribute("id");
+            }
+        });
+
+        navLi.forEach((li) => {
+            li.classList.remove("active");
+            if (li.getAttribute("href").includes(current)) {
+                li.classList.add("active");
+            }
+        });
+    };
+</script>
+
+</body>
+</html>
