@@ -126,7 +126,7 @@
             background: rgba(190, 24, 93, 0.08); padding: 1px 5px; border-radius: 4px; direction: ltr; display: inline-block;
         }
         .rx-box {
-            background: #f1f5f9; border-left: 3px solid #94a3b8; padding: 6px 10px; margin-top: 5px;
+            background: #f1f5f9; border-left: 3px solid #94a3b8; padding: 1px 10px; margin-top: 0px;
             font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #475569;
             direction: ltr; text-align: left; display: block; width: 100%;
         }
@@ -139,7 +139,7 @@
             text-align: inherit; background: #e2e8f0; color: var(--text-main); padding: 10px;
             font-weight: 700; position: sticky; top: 0; z-index: 10;
         }
-        td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        td { padding: 0px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
         tr:hover td { background: #f8fafc; }
         
         /* Specific Column Widths */
@@ -296,85 +296,154 @@
         <span class="fa-only">اختصارات و اشکال دارویی</span>
     </div>
 
-    <div class="grid-area">
-        <!-- ABBREVIATIONS TABLE -->
-        <div class="card">
-            <div class="card-header">
-                <span class="en-only">Frequency & Route (15 Items)</span>
-                <span class="fa-only">تواتر و راه مصرف (۱۵ مورد)</span>
-            </div>
-            <div class="card-body2 table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="c-abbr">Abbr</th>
-                            <th><span class="en-only">Meaning</span><span class="fa-only">معنی</span></th>
-                            <th><span class="en-only">Use</span><span class="fa-only">کاربرد</span></th>
-                            <th><span class="en-only">Example Rx</span><span class="fa-only">مثال نسخه</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="c-abbr">Daily</td><td><span class="en-only">Once daily</span><span class="fa-only">روزی ۱ بار</span></td><td>MW</td><td><span class="rx-box">Chlorhexidine MW Daily</span></td></tr>
-                        <tr><td class="c-abbr">BID</td><td><span class="en-only">Twice daily</span><span class="fa-only">روزی ۲ بار</span></td><td>Abx</td><td><span class="rx-box">Amox 500mg BID</span></td></tr>
-                        <tr><td class="c-abbr">TID</td><td><span class="en-only">3x daily</span><span class="fa-only">روزی ۳ بار</span></td><td>Pain</td><td><span class="rx-box">Ibuprofen 400mg TID</span></td></tr>
-                        <tr><td class="c-abbr">QID</td><td><span class="en-only">4x daily</span><span class="fa-only">روزی ۴ بار</span></td><td>Inf</td><td><span class="rx-box">Metro 250mg QID</span></td></tr>
-                        <tr><td class="c-abbr">a.c.</td><td><span class="en-only">Before meal</span><span class="fa-only">قبل غذا</span></td><td>GI</td><td><span class="rx-box">Omeprazole 20mg a.c.</span></td></tr>
-                        <tr><td class="c-abbr">p.c.</td><td><span class="en-only">After meal</span><span class="fa-only">بعد غذا</span></td><td>NSAID</td><td><span class="rx-box">Ibuprofen 400mg p.c.</span></td></tr>
-                        <tr><td class="c-abbr">PO</td><td><span class="en-only">Oral</span><span class="fa-only">خوراکی</span></td><td>Gen</td><td><span class="rx-box">APAP 500mg PO</span></td></tr>
-                        <tr><td class="c-abbr">IM</td><td><span class="en-only">Intramuscular</span><span class="fa-only">عضلانی</span></td><td>Inj</td><td><span class="rx-box">Dexamethasone IM</span></td></tr>
-                        <tr><td class="c-abbr">IV</td><td><span class="en-only">Intravenous</span><span class="fa-only">وریدی</span></td><td>Sed</td><td><span class="rx-box">Midazolam IV</span></td></tr>
-                        <tr><td class="c-abbr">IV Inf</td><td><span class="en-only">Infusion</span><span class="fa-only">انفیوژن</span></td><td>Fluid</td><td><span class="rx-box">NS 500mL IV Inf</span></td></tr>
-                        <tr><td class="c-abbr">q4h</td><td><span class="en-only">Every 4h</span><span class="fa-only">هر ۴ ساعت</span></td><td>Pain</td><td><span class="rx-box">APAP 325mg q4h</span></td></tr>
-                        <tr><td class="c-abbr">q6h</td><td><span class="en-only">Every 6h</span><span class="fa-only">هر ۶ ساعت</span></td><td>Inf</td><td><span class="rx-box">Ibuprofen 400mg q6h</span></td></tr>
-                        <tr><td class="c-abbr">q8h</td><td><span class="en-only">Every 8h</span><span class="fa-only">هر ۸ ساعت</span></td><td>Abx</td><td><span class="rx-box">Amox 500mg q8h</span></td></tr>
-                        <tr><td class="c-abbr">PRN</td><td><span class="en-only">As Needed</span><span class="fa-only">هنگام نیاز</span></td><td>Pain</td><td><span class="rx-box">Ibuprofen PRN Pain</span></td></tr>
-                        <tr><td class="c-abbr">Stat</td><td><span class="en-only">Immediately</span><span class="fa-only">فوری</span></td><td>Emerg</td><td><span class="rx-box">Epi 0.3mg Stat</span></td></tr>
-                    </tbody>
-                </table>
-            </div>
+<div class="grid-area">
+    <!-- FREQUENCY & ROUTE TABLE -->
+    <div class="card">
+        <div class="card-header">
+            <span class="en-only">Frequency & Route (15 Items)</span>
+            <span class="fa-only">تواتر و راه مصرف (۱۵ مورد)</span>
         </div>
-
-        <!-- FORMS TABLE -->
-        <div class="card">
-            <div class="card-header">
-                <span class="en-only">Dosage Forms (19 Items)</span>
-                <span class="fa-only">اشکال دارویی (۱۹ مورد)</span>
-            </div>
-            <div class="card-body2  table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="c-abbr">Abbr</th>
-                            <th><span class="en-only">Meaning</span><span class="fa-only">معنی</span></th>
-                            <th><span class="en-only">Use</span><span class="fa-only">کاربرد</span></th>
-                            <th><span class="en-only">Example Rx</span><span class="fa-only">مثال نسخه</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="c-abbr">Cap</td><td><span class="en-only">Capsule</span><span class="fa-only">کپسول</span></td><td>Abx</td><td><span class="rx-box">Amox 500mg Cap</span></td></tr>
-                        <tr><td class="c-abbr">Tab</td><td><span class="en-only">Tablet</span><span class="fa-only">قرص</span></td><td>Pain</td><td><span class="rx-box">Ibuprofen 400mg Tab</span></td></tr>
-                        <tr><td class="c-abbr">Caplet</td><td><span class="en-only">Cap-Tab</span><span class="fa-only">قرص کپسولی</span></td><td>Pain</td><td><span class="rx-box">APAP 500mg Caplet</span></td></tr>
-                        <tr><td class="c-abbr">Syr</td><td><span class="en-only">Syrup</span><span class="fa-only">شربت</span></td><td>Peds</td><td><span class="rx-box">Amox Syr 250mg/5ml</span></td></tr>
-                        <tr><td class="c-abbr">Drop</td><td><span class="en-only">Drops</span><span class="fa-only">قطره</span></td><td>Fl</td><td><span class="rx-box">Fluoride Drop</span></td></tr>
-                        <tr><td class="c-abbr">Supp</td><td><span class="en-only">Suppository</span><span class="fa-only">شیاف</span></td><td>Alt</td><td><span class="rx-box">APAP Supp PRN</span></td></tr>
-                        <tr><td class="c-abbr">Cr</td><td><span class="en-only">Cream</span><span class="fa-only">کرم</span></td><td>Lip</td><td><span class="rx-box">Nystatin Cream</span></td></tr>
-                        <tr><td class="c-abbr">Oint</td><td><span class="en-only">Ointment</span><span class="fa-only">پماد</span></td><td>Topical</td><td><span class="rx-box">Lidocaine Oint</span></td></tr>
-                        <tr><td class="c-abbr">Gel</td><td><span class="en-only">Gel</span><span class="fa-only">ژل</span></td><td>LA</td><td><span class="rx-box">Lidocaine Gel</span></td></tr>
-                        <tr><td class="c-abbr">Spray</td><td><span class="en-only">Spray</span><span class="fa-only">اسپری</span></td><td>Gag</td><td><span class="rx-box">Lido Spray PRN</span></td></tr>
-                        <tr><td class="c-abbr">MW</td><td><span class="en-only">Mouthwash</span><span class="fa-only">دهان‌شویه</span></td><td>Gum</td><td><span class="rx-box">CHX MW BID</span></td></tr>
-                        <tr><td class="c-abbr">Susp</td><td><span class="en-only">Suspension</span><span class="fa-only">سوسپانسیون</span></td><td>Peds</td><td><span class="rx-box">Amox Susp q8h</span></td></tr>
-                        <tr><td class="c-abbr">Sol</td><td><span class="en-only">Solution</span><span class="fa-only">محلول</span></td><td>Irrig</td><td><span class="rx-box">Saline Sol</span></td></tr>
-                        <tr><td class="c-abbr">Elix</td><td><span class="en-only">Elixir</span><span class="fa-only">اکسیر</span></td><td>Hist</td><td><span class="rx-box">Diphenhydramine Elix</span></td></tr>
-                        <tr><td class="c-abbr">Eff</td><td><span class="en-only">Effervescent</span><span class="fa-only">جوشان</span></td><td>Pain</td><td><span class="rx-box">APAP Eff Tab</span></td></tr>
-                        <tr><td class="c-abbr">Amp</td><td><span class="en-only">Ampoule</span><span class="fa-only">آمپول</span></td><td>Inj</td><td><span class="rx-box">Lido 2% Amp</span></td></tr>
-                        <tr><td class="c-abbr">Vial</td><td><span class="en-only">Vial</span><span class="fa-only">ویال</span></td><td>Sed</td><td><span class="rx-box">Midazolam Vial</span></td></tr>
-                        <tr><td class="c-abbr">Fluid</td><td><span class="en-only">IV Fluid</span><span class="fa-only">مایع وریدی</span></td><td>Surg</td><td><span class="rx-box">NS 500mL Inf</span></td></tr>
-                        <tr><td class="c-abbr">Paste</td><td><span class="en-only">Paste</span><span class="fa-only">خمیر</span></td><td>Ulcer</td><td><span class="rx-box">Triamcinolone Paste</span></td></tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="card-body2 table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="c-abbr">Abbr</th>
+                        <th><span class="en-only">Meaning</span><span class="fa-only">معنی</span></th>
+                        <th><span class="en-only">Use</span><span class="fa-only">کاربرد</span></th>
+                        <th><span class="en-only">Example Rx</span><span class="fa-only">مثال نسخه</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="c-abbr">Daily</td>
+                        <td><span class="en-only">Once daily</span><span class="fa-only">روزی یک‌بار</span></td>
+                        <td>Mouthwash, supplements</td>
+                        <td><span class="rx-box">Chlorhexidine MW 0.12% PO daily</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">BID</td>
+                        <td><span class="en-only">Twice daily</span><span class="fa-only">روزی ۲ بار</span></td>
+                        <td>Antibiotics</td>
+                        <td><span class="rx-box">Amoxicillin 500 mg PO BID</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">TID</td>
+                        <td><span class="en-only">Three times daily</span><span class="fa-only">روزی ۳ بار</span></td>
+                        <td>Analgesics</td>
+                        <td><span class="rx-box">Ibuprofen 400 mg PO TID</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">QID</td>
+                        <td><span class="en-only">Four times daily</span><span class="fa-only">روزی ۴ بار</span></td>
+                        <td>Severe infections</td>
+                        <td><span class="rx-box">Metronidazole 250 mg PO QID</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">a.c.</td>
+                        <td><span class="en-only">Before meals</span><span class="fa-only">قبل از غذا</span></td>
+                        <td>Gastric-sensitive meds</td>
+                        <td><span class="rx-box">Omeprazole 20 mg PO a.c.</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">p.c.</td>
+                        <td><span class="en-only">After meals</span><span class="fa-only">بعد از غذا</span></td>
+                        <td>NSAIDs</td>
+                        <td><span class="rx-box">Ibuprofen 400 mg PO p.c.</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">PO</td>
+                        <td><span class="en-only">Oral</span><span class="fa-only">خوراکی</span></td>
+                        <td>Most dental meds</td>
+                        <td><span class="rx-box">Acetaminophen 500 mg PO</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">IM</td>
+                        <td><span class="en-only">Intramuscular</span><span class="fa-only">تزریق عضلانی</span></td>
+                        <td>Swelling control</td>
+                        <td><span class="rx-box">Dexamethasone 4 mg IM stat</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">IV</td>
+                        <td><span class="en-only">Intravenous</span><span class="fa-only">تزریق وریدی</span></td>
+                        <td>Sedation</td>
+                        <td><span class="rx-box">Midazolam 2 mg IV</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">IV Inf</td>
+                        <td><span class="en-only">IV infusion</span><span class="fa-only">انفیوژن وریدی</span></td>
+                        <td>Long procedures</td>
+                        <td><span class="rx-box">NS 500 mL IV Inf</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">q4h</td>
+                        <td><span class="en-only">Every 4 hours</span><span class="fa-only">هر ۴ ساعت</span></td>
+                        <td>Acute pain</td>
+                        <td><span class="rx-box">Acetaminophen 325 mg PO q4h</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">q6h</td>
+                        <td><span class="en-only">Every 6 hours</span><span class="fa-only">هر ۶ ساعت</span></td>
+                        <td>Pain/infection</td>
+                        <td><span class="rx-box">Ibuprofen 400 mg PO q6h</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">q8h</td>
+                        <td><span class="en-only">Every 8 hours</span><span class="fa-only">هر ۸ ساعت</span></td>
+                        <td>Antibiotics</td>
+                        <td><span class="rx-box">Amoxicillin 500 mg PO q8h</span></td>
+                    </tr>
+                    <tr>
+                        <td class="c-abbr">PRN</td>
+                        <td><span class="en-only">As needed</span><span class="fa-only">در صورت لزوم</span></td>
+                        <td>Pain control</td>
+                        <td><span class="rx-box">Ibuprofen 400 mg PO PRN pain</span></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <!-- DOSAGE FORMS TABLE -->
+    <div class="card">
+        <div class="card-header">
+            <span class="en-only">Dosage Forms (19 Items)</span>
+            <span class="fa-only">اشکال دارویی (۱۹ مورد)</span>
+        </div>
+        <div class="card-body2 table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="c-abbr">Abbr</th>
+                        <th><span class="en-only">Meaning</span><span class="fa-only">معنی</span></th>
+                        <th><span class="en-only">Use</span><span class="fa-only">کاربرد</span></th>
+                        <th><span class="en-only">Example Rx</span><span class="fa-only">مثال نسخه</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="c-abbr">Cap</td><td><span class="en-only">Capsule</span><span class="fa-only">کپسول</span></td><td>Antibiotics</td><td><span class="rx-box">Amoxicillin 500 mg cap PO TID</span></td></tr>
+                    <tr><td class="c-abbr">Tab</td><td><span class="en-only">Tablet</span><span class="fa-only">قرص</span></td><td>Analgesics</td><td><span class="rx-box">Ibuprofen 400 mg tab PO TID</span></td></tr>
+                    <tr><td class="c-abbr">Caplet</td><td><span class="en-only">Capsule-shaped tablet</span><span class="fa-only">قرص کپسول‌مانند</span></td><td>Pain relief</td><td><span class="rx-box">Acetaminophen 500 mg caplet PO</span></td></tr>
+                    <tr><td class="c-abbr">Syr</td><td><span class="en-only">Syrup</span><span class="fa-only">شربت</span></td><td>Pediatric antibiotics</td><td><span class="rx-box">Amoxicillin syrup 250 mg/5 mL PO TID</span></td></tr>
+                    <tr><td class="c-abbr">Drop</td><td><span class="en-only">Drops</span><span class="fa-only">قطره</span></td><td>Pediatric fluoride</td><td><span class="rx-box">Fluoride drops PO daily</span></td></tr>
+                    <tr><td class="c-abbr">Supp</td><td><span class="en-only">Suppository</span><span class="fa-only">شیاف</span></td><td>Alternative analgesic</td><td><span class="rx-box">Acetaminophen supp PRN</span></td></tr>
+                    <tr><td class="c-abbr">Cr</td><td><span class="en-only">Cream</span><span class="fa-only">کرم</span></td><td>Angular cheilitis</td><td><span class="rx-box">Nystatin cream apply BID</span></td></tr>
+                    <tr><td class="c-abbr">Oint</td><td><span class="en-only">Ointment</span><span class="fa-only">پماد چرب</span></td><td>Topical anesthesia</td><td><span class="rx-box">Lidocaine oint apply PRN</span></td></tr>
+                    <tr><td class="c-abbr">Gel</td><td><span class="en-only">Gel</span><span class="fa-only">ژل</span></td><td>Oral anesthesia</td><td><span class="rx-box">Lidocaine oral gel apply TID</span></td></tr>
+                    <tr><td class="c-abbr">Spray</td><td><span class="en-only">Spray</span><span class="fa-only">اسپری</span></td><td>Gag reflex</td><td><span class="rx-box">Lidocaine spray PRN</span></td></tr>
+                    <tr><td class="c-abbr">MW</td><td><span class="en-only">Mouthwash</span><span class="fa-only">دهان‌شویه</span></td><td>Gingivitis</td><td><span class="rx-box">Chlorhexidine MW 0.12% rinse BID</span></td></tr>
+                    <tr><td class="c-abbr">Susp</td><td><span class="en-only">Suspension</span><span class="fa-only">سوسپانسیون</span></td><td>Pediatric use</td><td><span class="rx-box">Amoxicillin susp PO q8h</span></td></tr>
+                    <tr><td class="c-abbr">Sol</td><td><span class="en-only">Solution</span><span class="fa-only">محلول</span></td><td>Oral rinse</td><td><span class="rx-box">Saline sol rinse TID</span></td></tr>
+                    <tr><td class="c-abbr">Elix</td><td><span class="en-only">Elixir</span><span class="fa-only">اکسیر</span></td><td>Antihistamine</td><td><span class="rx-box">Diphenhydramine elix PO</span></td></tr>
+                    <tr><td class="c-abbr">Eff</td><td><span class="en-only">Effervescent tab</span><span class="fa-only">قرص جوشان</span></td><td>Analgesic</td><td><span class="rx-box">Acetaminophen eff tab PO</span></td></tr>
+                    <tr><td class="c-abbr">Amp</td><td><span class="en-only">Ampoule</span><span class="fa-only">آمپول</span></td><td>Local anesthesia</td><td><span class="rx-box">Lidocaine 2% amp IM</span></td></tr>
+                    <tr><td class="c-abbr">Vial</td><td><span class="en-only">Vial</span><span class="fa-only">ویال</span></td><td>Sedation drugs</td><td><span class="rx-box">Midazolam vial IV</span></td></tr>
+                    <tr><td class="c-abbr">IV Fluid</td><td><span class="en-only">IV fluid</span><span class="fa-only">سرم</span></td><td>Surgery support</td><td><span class="rx-box">Normal Saline IV Inf</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 
     <!-- ========================================= -->
     <!-- SECTION 3: CLINICAL PROTOCOLS -->
